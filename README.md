@@ -9,7 +9,7 @@ Its miner derives from [*Efficient Discovery of Understandable Declarative Proce
 Declarray needs Python 3.11 or newer and numpy 2.0 or newer.
 
 ```bash
-uv add git+https://github.com/davide-dona/Declarray
+uv add git+https://github.com/davide-dona/declarray
 ```
 
 ## Usage

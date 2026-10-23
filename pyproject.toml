@@ -21,7 +21,7 @@ classifiers = [
 ]
 
 [project.urls]
-Repository = "https://github.com/davide-dona/Declarray"
+Repository = "https://github.com/davide-dona/declarray"
 
 [dependency-groups]
 dev = [
