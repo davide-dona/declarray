@@ -2,7 +2,7 @@ from collections.abc import Callable
 
 import numpy as np
 
-from fcfdeclare.engine.statistics import TraceStatistics
+from declarray.engine.statistics import TraceStatistics
 
 # A check scores K constraints of one template over a batch of T traces at once: it takes the
 # batch statistics and the [K] arrays `a`, `b`, `n` of activity codes and counts, and returns a

@@ -1,21 +1,21 @@
-# FCFDeclare
+# Declarray
 
-FCFDeclare (Fast Control-Flow Declare) mines Declare models from event logs and checks traces against them. It works on the control flow alone: a trace is a sequence of activity names, and every template is evaluated for a whole batch of traces at once with numpy. 
+Declarray mines Declare models from event logs and checks traces against them. It works on the control flow alone: a trace is a sequence of activity names, and every template is evaluated for a whole batch of traces at once with numpy. 
 
 Its miner derives from [*Efficient Discovery of Understandable Declarative Process Models from Event Logs*](https://doi.org/10.1007/978-3-642-31095-9_18) (Maggi, Bose, and van der Aalst, CAiSE 2012).
 
 ## Installation
 
-FCFDeclare needs Python 3.11 or newer and numpy 2.0 or newer.
+Declarray needs Python 3.11 or newer and numpy 2.0 or newer.
 
 ```bash
-uv add git+https://github.com/davide-dona/FCFDeclare
+uv add git+https://github.com/davide-dona/declarray
 ```
 
 ## Usage
 
 ```python
-import fcfdeclare as fcf
+import declarray as dcl
 
 log = [
     ['Register', 'Check', 'Approve', 'Close'],
@@ -23,18 +23,18 @@ log = [
     ['Register', 'Approve', 'Close'],
 ]
 
-model = fcf.mine(
+model = dcl.mine(
     log,
     min_support=0.3,
     min_confidence=0.9,
     max_cardinality=2,
 )
-model.constraints[fcf.Constraint('Response', ('Register', 'Close'))]
+model.constraints[dcl.Constraint('Response', ('Register', 'Close'))]
 # Measures(support=1.0, confidence=1.0)
 model.save('model.json')
-model = fcf.DeclareModel.load('model.json')
+model = dcl.DeclareModel.load('model.json')
 
-checker = fcf.Checker(model)
+checker = dcl.Checker(model)
 result = checker.check([['Register', 'Close'], ['Register', 'Approve', 'Close']])
 result.satisfied  # how many constraints each trace satisfies, shape [B]
 result.share  # the fraction of the constraints each trace satisfies, shape [B]
@@ -94,7 +94,7 @@ The **support** of a candidate is the fraction of traces in which it is non-vacu
 
 Support never exceeds the support of the activation, the fraction of traces in which the activation occurs: if $a$ occurs in one trace out of 100, Response$(a, b)$ has a support of at most 0.01. A rare activation therefore cannot make a candidate look strong, but a high `min_support` also drops every rule on a rare activity, however reliable.
 
-The paper's non-vacuous satisfaction also requires that no stronger constraint holds in the trace. FCFDeclare does not, so a trace that satisfies Chain Response$(a, b)$ also counts toward Response$(a, b)$.
+The paper's non-vacuous satisfaction also requires that no stronger constraint holds in the trace. Declarray does not, so a trace that satisfies Chain Response$(a, b)$ also counts toward Response$(a, b)$.
 
 ### Confidence
 

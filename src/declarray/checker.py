@@ -4,11 +4,11 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from fcfdeclare.engine.batching import chunks
-from fcfdeclare.engine.encoding import Vocabulary
-from fcfdeclare.engine.statistics import TraceStatistics
-from fcfdeclare.model.declare_model import DeclareModel
-from fcfdeclare.model.templates import Template
+from declarray.engine.batching import chunks
+from declarray.engine.encoding import Vocabulary
+from declarray.engine.statistics import TraceStatistics
+from declarray.model.declare_model import DeclareModel
+from declarray.model.templates import Template
 
 
 @dataclass(frozen=True, slots=True, eq=False)
