@@ -16,7 +16,7 @@ wheels = [
 ]
 
 [[package]]
-name = "fcfdeclare"
+name = "declarray"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

@@ -3,14 +3,14 @@ from collections.abc import Iterable, Sequence
 
 import numpy as np
 
-from fcfdeclare.engine.batching import chunks
-from fcfdeclare.engine.encoding import Vocabulary
-from fcfdeclare.engine.statistics import TraceStatistics
-from fcfdeclare.model.constraints import Constraint
-from fcfdeclare.model.declare_model import DeclareModel
-from fcfdeclare.model.measures import Measures
-from fcfdeclare.model.settings import MiningSettings
-from fcfdeclare.model.templates import Template
+from declarray.engine.batching import chunks
+from declarray.engine.encoding import Vocabulary
+from declarray.engine.statistics import TraceStatistics
+from declarray.model.constraints import Constraint
+from declarray.model.declare_model import DeclareModel
+from declarray.model.measures import Measures
+from declarray.model.settings import MiningSettings
+from declarray.model.templates import Template
 
 
 def mine(

@@ -3,9 +3,9 @@ from typing import Self
 
 import numpy as np
 
-from fcfdeclare.engine import checks
-from fcfdeclare.engine.checks import Check
-from fcfdeclare.engine.statistics import TraceStatistics
+from declarray.engine import checks
+from declarray.engine.checks import Check
+from declarray.engine.statistics import TraceStatistics
 
 
 class Template(StrEnum):

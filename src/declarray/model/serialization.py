@@ -3,9 +3,9 @@ from collections.abc import Mapping
 from dataclasses import asdict, fields
 from typing import Any
 
-from fcfdeclare.model.constraints import Constraint
-from fcfdeclare.model.measures import Measures
-from fcfdeclare.model.settings import MiningSettings
+from declarray.model.constraints import Constraint
+from declarray.model.measures import Measures
+from declarray.model.settings import MiningSettings
 
 # The exact keys of a saved model, of its settings, and of each of its constraints
 _MODEL_KEYS = {'settings', 'constraints'}

@@ -1,7 +1,7 @@
 [project]
-name = "fcfdeclare"
+name = "declarray"
 version = "0.1.0"
-description = "Fast Control-Flow Declare: vectorized mining and checking of Declare models"
+description = "Vectorized mining and checking of Declare models"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -21,7 +21,7 @@ classifiers = [
 ]
 
 [project.urls]
-Repository = "https://github.com/davide-dona/FCFDeclare"
+Repository = "https://github.com/davide-dona/Declarray"
 
 [dependency-groups]
 dev = [

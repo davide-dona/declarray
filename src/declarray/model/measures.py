@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from fcfdeclare.model.settings import is_number
+from declarray.model.settings import is_number
 
 
 @dataclass(frozen=True, slots=True)

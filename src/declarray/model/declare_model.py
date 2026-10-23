@@ -5,10 +5,10 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import Self
 
-from fcfdeclare.model import serialization
-from fcfdeclare.model.constraints import Constraint
-from fcfdeclare.model.measures import Measures
-from fcfdeclare.model.settings import MiningSettings
+from declarray.model import serialization
+from declarray.model.constraints import Constraint
+from declarray.model.measures import Measures
+from declarray.model.settings import MiningSettings
 
 
 @dataclass(frozen=True, slots=True)

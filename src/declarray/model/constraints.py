@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from fcfdeclare.model.templates import Template
+from declarray.model.templates import Template
 
 # The position of each template in declaration order, which orders the constraints of a model
 _TEMPLATE_RANK = {template: rank for rank, template in enumerate(Template)}
