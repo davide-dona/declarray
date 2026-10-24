@@ -41,6 +41,10 @@ class DeclareModel:
         constraints = dict(sorted(self.constraints.items(), key=lambda item: item[0].sort_key))
         object.__setattr__(self, 'constraints', MappingProxyType(constraints))
 
+    def __reduce__(self) -> tuple[type[Self], tuple[MiningSettings, dict[Constraint, Measures]]]:
+        # A mappingproxy cannot be pickled, so the model is rebuilt from a plain copy
+        return type(self), (self.settings, dict(self.constraints))
+
     def save(self, path: str | os.PathLike[str]) -> None:
         """Save the model as JSON, which equal models always serialize to the same bytes."""
         text = serialization.dumps(self.settings, self.constraints)
