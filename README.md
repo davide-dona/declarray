@@ -41,13 +41,14 @@ result.share  # the fraction of the constraints each trace satisfies, shape [B]
 result.full  # 1.0 for a trace that satisfies every constraint, else 0.0, shape [B]
 
 matrix = checker.holds(log)  # bool array [B, K], one column per constraint of the model
+witnesses = checker.witnesses(log)  # bool array [B, K], non-vacuous satisfaction
 ```
 
 > [!WARNING]
 > A `str` is itself a sequence of one-character strings, so `'abc'` is read as the trace of activities `a`, `b`, `c`.
 
 > [!TIP]
-> Each call to `check` or `holds` costs a few numpy operations per template whatever the batch size, so pass all traces in one call rather than one trace per call. Duplicate traces in a batch are evaluated once.
+> Each call to `check`, `holds`, or `witnesses` costs a few numpy operations per template whatever the batch size, so pass all traces in one call rather than one trace per call. Duplicate traces in a batch are evaluated once.
 
 [`examples/mining_and_fitness.ipynb`](examples/mining_and_fitness.ipynb) walks through the whole flow on a small CSV log: loading the traces, mining a model, scoring the fitness of the log and of new traces, and finding the constraints a trace violates.
 
@@ -112,6 +113,7 @@ Existence, Absence, and Exactly are the **cardinality** templates: they require 
 
 - `check` returns, for each trace, `satisfied`, the number of constraints it satisfies; `share`, the fraction of the constraints it satisfies, a fitness in $[0, 1]$; and `full`, 1 when it satisfies every constraint and 0 otherwise. For a model without constraints, both scores are 0.
 - `holds` returns a bool matrix of shape $[B, K]$, whether each of the $B$ traces satisfies each of the $K$ constraints, in the order of `model.constraints`. It shows which constraints a trace violates.
+- `witnesses` returns the same $[B, K]$ matrix for non-vacuous satisfaction: the activation occurs in the trace and the constraint holds. A column's mean over a log is the constraint's support on it, as mining measures it.
 
 ## Saved models
 

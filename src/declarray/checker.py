@@ -1,5 +1,5 @@
 from collections import defaultdict
-from collections.abc import Iterable, Iterator, Sequence
+from collections.abc import Callable, Iterable, Iterator, Sequence
 from dataclasses import dataclass
 
 import numpy as np
@@ -9,6 +9,10 @@ from declarray.engine.encoding import Vocabulary
 from declarray.engine.statistics import TraceStatistics
 from declarray.model.declare_model import DeclareModel
 from declarray.model.templates import Template
+
+# `Template.evaluate` or `Template.witness`, called on a template with the batch statistics and
+# the [K] arrays `a`, `b`, `n`, returning a [T, K] bool array
+_Measure = Callable[[Template, TraceStatistics, np.ndarray, np.ndarray, np.ndarray], np.ndarray]
 
 
 @dataclass(frozen=True, slots=True, eq=False)
@@ -102,7 +106,7 @@ class Checker:
         distinct, inverse = self._distinct(traces)
         # Sum per chunk, so that the full [T, K] matrix is never held at once
         satisfied = np.zeros(len(distinct), np.int64)
-        for chunk, holds in self._evaluate(distinct):
+        for chunk, holds in self._evaluate(distinct, Template.evaluate):
             satisfied[chunk] = holds.sum(axis=1)
         return Conformance(satisfied=satisfied[inverse], total=self.total)
 
@@ -114,11 +118,26 @@ class Checker:
         Args:
             traces: The batch, as `check` takes it.
         """
+        return self._matrix(traces, Template.evaluate)
+
+    def witnesses(self, traces: Iterable[Sequence[str]]) -> np.ndarray:
+        """
+        [B, K] Whether each trace satisfies each constraint non-vacuously, in the order of
+        `model.constraints`: the constraint's activation occurs and the constraint holds. The
+        mean of a column over a log is the constraint's support on it.
+
+        Args:
+            traces: The batch, as `check` takes it.
+        """
+        return self._matrix(traces, Template.witness)
+
+    def _matrix(self, traces: Iterable[Sequence[str]], measure: _Measure) -> np.ndarray:
+        """[B, K] The template measure of each trace and constraint."""
         distinct, inverse = self._distinct(traces)
-        holds = np.zeros((len(distinct), self.total), bool)
-        for chunk, chunk_holds in self._evaluate(distinct):
-            holds[chunk] = chunk_holds
-        return holds[inverse]
+        matrix = np.zeros((len(distinct), self.total), bool)
+        for chunk, chunk_matrix in self._evaluate(distinct, measure):
+            matrix[chunk] = chunk_matrix
+        return matrix[inverse]
 
     def _distinct(self, traces: Iterable[Sequence[str]]) -> tuple[list[np.ndarray], np.ndarray]:
         """The distinct traces of a batch, encoded, and the index of each trace among them."""
@@ -129,15 +148,17 @@ class Checker:
         )
         return self._vocabulary.encode(index), inverse
 
-    def _evaluate(self, traces: list[np.ndarray]) -> Iterator[tuple[slice, np.ndarray]]:
-        """Yield each chunk of the traces with its [T, K] satisfaction matrix."""
+    def _evaluate(
+        self, traces: list[np.ndarray], measure: _Measure
+    ) -> Iterator[tuple[slice, np.ndarray]]:
+        """Yield each chunk of the traces with its [T, K] matrix of the template measure."""
         size = self._vocabulary.size
         for chunk in chunks(traces, size, per_trace=self.total):
             statistics = TraceStatistics(traces[chunk], size)
-            holds = np.zeros((statistics.n_traces, self.total), bool)
+            matrix = np.zeros((statistics.n_traces, self.total), bool)
             # Evaluate each template once over all of its constraints, into their model columns
             for group in self._groups:
-                holds[:, group.columns] = group.template.evaluate(
-                    statistics, group.a, group.b, group.n
+                matrix[:, group.columns] = measure(
+                    group.template, statistics, group.a, group.b, group.n
                 )
-            yield chunk, holds
+            yield chunk, matrix
